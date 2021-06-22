@@ -5,8 +5,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // enable cors for API
   app.enableCors();
 
+  // Swagger Documentation Setup
   const config = new DocumentBuilder()
     .setTitle('DMS API Documentation')
     .setDescription('The DMS API description')

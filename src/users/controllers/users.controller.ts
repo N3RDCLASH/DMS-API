@@ -8,10 +8,11 @@ import {
   Put,
   UseFilters,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UserBuilder } from './user.builder';
-import { HttpExceptionFilter } from '../filters/http-exception.filter';
-import { HashingHelper } from 'src/middleware/hashing.helper';
+import { UsersService } from '../service/users.service';
+import { UserBuilder } from '../user.builder';
+import { HttpExceptionFilter } from '../../filters/http-exception.filter';
+import { AuthService as Auth } from 'src/auth/auth.service';
+import { Observable } from 'rxjs';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
@@ -19,7 +20,7 @@ import { HashingHelper } from 'src/middleware/hashing.helper';
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private hasher: HashingHelper,
+    private auth: Auth,
   ) {}
   @Post()
   async createUser(@Body() body): Promise<Object> {
@@ -30,7 +31,7 @@ export class UsersController {
       .setLastName(lastname)
       .setUserName(username)
       .setEmail(email)
-      .setPassword(await this.hasher.hashPassword(password))
+      .setPassword(await this.auth.hashPassword(password))
       .build();
 
     return this.usersService.createUser(user);
@@ -41,7 +42,7 @@ export class UsersController {
   }
 
   @Get()
-  getUserByUsername(@Param('username') username: String): Promise<Object> {
+  getUserByUsername(@Param('username') username: String): Object {
     return this.usersService.findAllUsers();
   }
 
@@ -58,9 +59,8 @@ export class UsersController {
       .setLastName(lastname)
       .setUserName(username)
       .setEmail(email)
-      .setPassword(await this.hasher.hashPassword(password))
+      .setPassword(await this.auth.hashPassword(password))
       .build();
-
     return this.usersService.updateSingleUser(id, user);
   }
   @Delete(':id')
