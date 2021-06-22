@@ -7,15 +7,17 @@ import {
   Post,
   Put,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UserBuilder } from '../user.builder';
 import { HttpExceptionFilter } from '../../filters/http-exception.filter';
 import { AuthService as Auth } from 'src/auth/auth.service';
-import { Observable } from 'rxjs';
+import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(
