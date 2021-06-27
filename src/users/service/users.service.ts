@@ -1,13 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Catch, Injectable } from '@nestjs/common';
 import { User as UserEntity } from '../models/user.entity';
 import { User } from '../models/user.interface';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 @Injectable()
+@Catch(QueryFailedError)
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
@@ -15,8 +16,8 @@ export class UsersService {
     private auth: AuthService,
   ) {}
 
-  async createUser(user: User): Promise<Object> {
-    return await this.userRepository.save(user);
+  createUser(user: User): Observable<Object> {
+    return from(this.userRepository.save(user));
   }
 
   findAllUsers(): Observable<Object> {

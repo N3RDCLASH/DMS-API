@@ -15,7 +15,7 @@ export class AppController {
     return this.appService.getHello();
   }
   @Post('login')
-  login(@Body() body): Object {
+  login(@Body() body: any): Object {
     const { username, password } = body;
     return this.userService.login(username, password);
   }
