@@ -1,4 +1,9 @@
-import { BadRequestException, Catch, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Catch,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User as UserEntity } from '../models/user.entity';
 import { User } from '../models/user.interface';
 import { QueryFailedError, Repository } from 'typeorm';
@@ -44,6 +49,13 @@ export class UsersService {
       }),
     );
   }
+  findSingleUserByEmail(email: String): Observable<User> {
+    return from(
+      this.userRepository.findOne({
+        where: { email },
+      }),
+    );
+  }
 
   updateSingleUser(id: number, data: User): Observable<Object> {
     delete data.email;
@@ -55,20 +67,23 @@ export class UsersService {
     return from(this.userRepository.delete(id));
   }
 
-  login(username: string, password: string): Observable<String> {
-    return from(this.validateUser(username, password)).pipe(
+  login(email: string, password: string): Observable<Object> {
+    return from(this.validateUser(email, password)).pipe(
       switchMap((user: User) => {
-        return this.auth.generateJWT(user).pipe(map((jwt) => jwt));
+        delete user.password;
+        return this.auth
+          .generateJWT(user)
+          .pipe(map((jwt) => ({ ...user, token: jwt })));
       }),
     );
   }
 
-  validateUser(username: string, password: string) {
-    if (!username)
+  validateUser(email: string, password: string) {
+    if (!email)
       throw new BadRequestException({
         statusCode: 400,
         type: 'bad request',
-        message: 'Please enter a username!',
+        message: 'Please enter a email!',
       });
 
     if (!password)
@@ -78,19 +93,21 @@ export class UsersService {
         message: 'Please enter a password!',
       });
 
-    return from(this.findSingleUserByUsername(username)).pipe(
-      map((user: User) => {
-        if (user) {
-          const match = this.auth.comparePasswords(password, user.password);
-          if (match) {
-            return user;
-          }
-          throw new BadRequestException({
-            statusCode: 400,
-            type: 'bad request',
-            message: 'Invalid Credentials!',
-          });
-        }
+    return from(this.findSingleUserByEmail(email)).pipe(
+      switchMap((user: User) => {
+        if (user)
+          return this.auth.comparePasswords(password, user.password).pipe(
+            map((match: Boolean) => {
+              if (match) return user;
+              throw new UnauthorizedException();
+            }),
+          );
+
+        throw new UnauthorizedException({
+          statusCode: 401,
+          type: 'Unauthorized',
+          message: 'Invalid Credentials!',
+        });
       }),
     );
   }
