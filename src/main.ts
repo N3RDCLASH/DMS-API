@@ -1,13 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-// import * as expressListRoutes from 'express-list-routes';
+import * as helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // enable cors for API
   app.enableCors();
+  app.use(helmet());
 
   // Swagger Documentation Setup
   const config = new DocumentBuilder()
@@ -20,10 +21,5 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
-
-  // Mechanism for seeing requestst made to the server
-  // const server = app.getHttpServer();
-  // const router = server._events.request._router;
-  // console.log(expressListRoutes({}, 'API:', router));
 }
 bootstrap();
