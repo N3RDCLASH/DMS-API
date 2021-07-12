@@ -1,19 +1,25 @@
 import {
-  BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
   Get,
+  Header,
   Param,
   Post,
   Query,
-  UnsupportedMediaTypeException,
+  Req,
+  Request,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DocumentsService } from '../services/documents.service';
-import { uploadOptions } from 'src/middleware/fileupload.utils';
+import {
+  getUserFromRequestToken,
+  uploadOptions,
+} from 'src/middleware/fileupload.utils';
+import { DocumentBuilder } from '../document.builder';
+import { UserBuilder } from 'src/users/user.builder';
+import jwt_decode from 'jwt-decode';
 
 @Controller('documents')
 export class DocumentsController {
@@ -22,14 +28,29 @@ export class DocumentsController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', uploadOptions))
   uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body('owner_id') id: number,
+    @UploadedFile()
+    file: Express.Multer.File,
+    @Req() req: Request,
   ) {
-    return file;
+    const {
+      user: { id },
+    } = getUserFromRequestToken(req);
+    
+    let document = new DocumentBuilder()
+      .setFile(file.path)
+      .setOwnerID(id)
+      .build();
+    return this.documentService.createDocument(document);
   }
 
   @Get()
   getAllDocumentsByUser(@Query('user_id') owner_id: number) {
     return this.documentService.findAllDocumentsByUser(owner_id);
+  }
+
+  @Post(':id/share')
+  shareDocument(@Body() body) {
+    console.log(body);
+    return;
   }
 }

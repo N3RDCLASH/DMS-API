@@ -5,6 +5,7 @@ import {
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import jwt_decode from 'jwt-decode';
 const ACCEPTED_MIME_TYPES = [
   'image/jpeg',
   'image/png',
@@ -13,26 +14,27 @@ const ACCEPTED_MIME_TYPES = [
 ];
 
 export const uploadOptions: MulterOptions = {
+  fileFilter: validateUploadRequest,
   storage: diskStorage({
     destination: './upload',
     filename: createFileName,
   }),
-  fileFilter: validateUploadRequest,
 };
-
+// TODO: rewrite id as user id from jwt token
 function validateUploadRequest(req, file, cb) {
-  const { owner_id: id } = req.body;
+  const {
+    user: { id },
+  } = getUserFromRequestToken(req);
   console.log(id);
   if (!file || !id) {
-    cb(null, false);
-    // throw new BadRequestException();
+    return cb(new BadRequestException());
+    // throw ;
   }
 
+  console.log(mimeTypeIsValid(file));
   if (!mimeTypeIsValid(file)) {
-    const { path, destination } = file;
-    console.log(destination + path);
-    cb(null, false);
-    // throw new UnsupportedMediaTypeException({ ...file });
+    console.log('test');
+    return cb(new UnsupportedMediaTypeException());
   }
   cb(null, true);
 }
@@ -45,4 +47,9 @@ function createFileName(req, file, callback) {
 
 function mimeTypeIsValid(file: Express.Multer.File) {
   return ACCEPTED_MIME_TYPES.includes(file.mimetype);
+}
+
+export function getUserFromRequestToken(req: any): any {
+  const { authorization: token } = req.headers;
+  return jwt_decode(token.split(' ')[1]);
 }
