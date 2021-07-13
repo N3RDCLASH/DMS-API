@@ -57,7 +57,7 @@ export class UsersController {
     const { firstname, lastname, username, password, email } = body;
     // builder pattern
     let user = new UserBuilder()
-      .setFirstName(firstname)
+      .setFirstName(firstname) 
       .setLastName(lastname)
       .setUserName(username)
       .setEmail(email)

@@ -26,7 +26,7 @@ export class UsersService {
   }
 
   findAllUsers(): Observable<Object> {
-    return from(this.userRepository.find()).pipe(
+    return from(this.userRepository.find({ relations: ["roles"] })).pipe(
       map((users: UserEntity[]) => {
         users.forEach((user) => delete user.password);
         return users;

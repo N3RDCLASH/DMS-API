@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UsersController } from './users/controllers/users.controller';
+import { RolesController } from './roles/controllers/roles.controller';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -14,12 +16,12 @@ import { UsersController } from './users/controllers/users.controller';
     DocumentsModule,
     TypeOrmModule.forRoot(),
     ConfigModule.forRoot(),
+    RolesModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, RolesController],
   providers: [AppService],
 })
 export class AppModule {
-  
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }
