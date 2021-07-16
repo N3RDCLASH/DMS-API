@@ -9,6 +9,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UsersController } from './users/controllers/users.controller';
 import { RolesController } from './roles/controllers/roles.controller';
 import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RolesModule } from './roles/roles.module';
     TypeOrmModule.forRoot(),
     ConfigModule.forRoot(),
     RolesModule,
+    PermissionsModule,
   ],
   controllers: [AppController, RolesController],
   providers: [AppService],
