@@ -12,11 +12,10 @@ export class PermissionsService {
   ) {}
 
   //  Permissions are readonly in the system
-  
-  findAllPermissions(): Observable<PermissionEntity[]> {
-    return from(this.permissionRepository.find());
+  findAllPermissions(): Promise<PermissionEntity[]> {
+    return this.permissionRepository.find();
   }
-  findOnePermission(id: number): Observable<PermissionEntity> {
-    return from(this.permissionRepository.findOne(id));
+  findOnePermission(id: number): Promise<PermissionEntity> {
+    return this.permissionRepository.findOne(id);
   }
 }
