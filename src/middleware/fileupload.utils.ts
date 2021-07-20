@@ -6,6 +6,7 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import jwt_decode from 'jwt-decode';
+// TODO: update accepted mime types array
 const ACCEPTED_MIME_TYPES = [
   'image/jpeg',
   'image/png',
@@ -20,7 +21,7 @@ export const uploadOptions: MulterOptions = {
     filename: createFileName,
   }),
 };
-// TODO: rewrite id as user id from jwt token
+
 function validateUploadRequest(req, file, cb) {
   const {
     user: { id },
