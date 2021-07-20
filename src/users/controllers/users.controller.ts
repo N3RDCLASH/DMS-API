@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -14,6 +15,7 @@ import { UserBuilder } from '../user.builder';
 import { HttpExceptionFilter } from '../../filters/http-exception.filter';
 import { AuthService as Auth } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
+
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
@@ -45,7 +47,7 @@ export class UsersController {
 
   @Get()
   getUserByUsername(@Param('username') username: String): Object {
-    return this.usersService.findAllUsers();
+    return this.usersService.findSingleUserByUsername(username);
   }
 
   @Get(':id')
@@ -54,14 +56,15 @@ export class UsersController {
   }
   @Put(':id')
   async updateUserById(@Param('id') id: number, @Body() body): Promise<Object> {
-    const { firstname, lastname, username, password, email } = body;
+    const { firstname, lastname, username } = body;
+    if (!firstname || !lastname || !username) {
+      throw BadRequestException;
+    }
     // builder pattern
     let user = new UserBuilder()
-      .setFirstName(firstname) 
+      .setFirstName(firstname)
       .setLastName(lastname)
       .setUserName(username)
-      .setEmail(email)
-      .setPassword(await this.auth.hashPassword(password))
       .build();
     return this.usersService.updateSingleUser(id, user);
   }
