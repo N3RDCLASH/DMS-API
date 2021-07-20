@@ -12,6 +12,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+const userRelations = { relations: ['roles', 'roles.permissions'] };
+
 @Injectable()
 @Catch(QueryFailedError)
 export class UsersService {
@@ -21,52 +23,57 @@ export class UsersService {
     private auth: AuthService,
   ) {}
 
+  // create a new user
   createUser(user: User): Observable<Object> {
     return from(this.userRepository.save(user));
   }
-
+  // find all users
   findAllUsers(): Observable<Object> {
-    return from(this.userRepository.find({ relations: ["roles"] })).pipe(
+    return from(this.userRepository.find({ ...userRelations })).pipe(
       map((users: UserEntity[]) => {
         users.forEach((user) => delete user.password);
         return users;
       }),
     );
   }
-
+  // find single user by id
   findSingleUser(id: number): Observable<User> {
-    return from(this.userRepository.findOne(id)).pipe(
+    return from(this.userRepository.findOne(id, { ...userRelations })).pipe(
       map((user: UserEntity) => {
         const { password, ...result } = user;
         return result;
       }),
     );
   }
+  // find single user by username
   findSingleUserByUsername(username: String): Observable<User> {
     return from(
       this.userRepository.findOne({
         where: { username: username },
+        ...userRelations,
       }),
     );
   }
+  // find single user by email
   findSingleUserByEmail(email: String): Observable<User> {
     return from(
       this.userRepository.findOne({
         where: { email },
+        ...userRelations,
       }),
     );
   }
-
+  // update single user
   updateSingleUser(id: number, data: User): Observable<Object> {
     delete data.email;
     delete data.password;
     return from(this.userRepository.update(id, data));
   }
-
+  // delete single user
   deleteUser(id: number): Observable<Object> {
     return from(this.userRepository.delete(id));
   }
-
+  // login user
   login(email: string, password: string): Observable<Object> {
     return from(this.validateUser(email, password)).pipe(
       switchMap((user: User) => {
@@ -77,7 +84,7 @@ export class UsersService {
       }),
     );
   }
-
+  // validate user credentials
   validateUser(email: string, password: string) {
     if (!email)
       throw new BadRequestException({
