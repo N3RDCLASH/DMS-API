@@ -1,6 +1,12 @@
-import { Permission } from 'src/permissions/models/permission.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class Role {
+export class CreateRoleDto {
+  @ApiProperty()
   name: string;
-  // permissions: Permission[];
 }
+
+export class CreateRolePermissionDto {
+  @ApiProperty()
+  permission_id: number;
+}
+

@@ -1,10 +1,11 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
+import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { Permission } from '../models/permission.entity';
 import { PermissionsService } from '../service/permissions.service';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('permissions')
 @Controller('permissions')
 export class PermissionsController {

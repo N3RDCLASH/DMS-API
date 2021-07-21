@@ -18,6 +18,7 @@ import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { hasRole } from 'src/auth/decorators/roles.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateUserDto, UpdateUserDto } from '../models/user.interface';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
@@ -31,9 +32,9 @@ export class UsersController {
   ) {}
   @Post()
   @hasRole('admin')
-  async createUser(@Body() body): Promise<Object> {
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<Object> {
     // todo: rewrite using OpenApi DTO
-    const { firstname, lastname, username, password, email } = body;
+    const { firstname, lastname, username, password, email } = createUserDto;
     // builder pattern
     let user = new UserBuilder()
       .setFirstName(firstname)
@@ -61,8 +62,11 @@ export class UsersController {
     return this.usersService.findSingleUser(id);
   }
   @Put(':id')
-  async updateUserById(@Param('id') id: number, @Body() body): Promise<Object> {
-    const { firstname, lastname, username } = body;
+  async updateUserById(
+    @Param('id') id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<Object> {
+    const { firstname, lastname, username } = updateUserDto;
     if (!firstname || !lastname || !username) {
       throw BadRequestException;
     }

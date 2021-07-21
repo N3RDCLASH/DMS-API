@@ -1,7 +1,7 @@
-import { Document } from './models/document.interface';
+import { CreateDocumentDto } from './models/document.interface';
 
 export class DocumentBuilder {
-  private readonly _document: Document;
+  private readonly _document: CreateDocumentDto;
   constructor() {
     this._document = {
       file: '',

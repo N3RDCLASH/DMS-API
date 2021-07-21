@@ -2,13 +2,13 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { UsersService } from '../users/service/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/models/user.interface';
+import { CreateUserDto } from 'src/users/models/user.interface';
 import { Observable, from } from 'rxjs';
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
-  generateJWT(user: User): Observable<string> {
+  generateJWT(user: CreateUserDto): Observable<string> {
     return from(this.jwtService.signAsync({ user }));
   }
 

@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Permission as PermissionEntity } from 'src/permissions/models/permission.entity';
 import { DeleteResult, getRepository, Repository, UpdateResult } from 'typeorm';
 import { Role as RoleEntity } from '../models/role.entity';
-import { Role } from '../models/role.interface';
+import { CreateRoleDto } from '../models/role.interface';
 
 const roleRelations = { relations: ['permissions'] };
 @Injectable()
@@ -15,7 +15,7 @@ export class RolesService {
     private readonly roleRepository: Repository<RoleEntity>,
   ) {}
 
-  createRole(role: Role): Observable<RoleEntity> {
+  createRole(role: CreateRoleDto): Observable<RoleEntity> {
     return from(this.roleRepository.save(role));
   }
 
@@ -26,7 +26,7 @@ export class RolesService {
     return this.roleRepository.findOne(id, { ...roleRelations });
   }
 
-  updateOneRole(id: number, role: Role): Observable<UpdateResult> {
+  updateOneRole(id: number, role: CreateRoleDto): Observable<UpdateResult> {
     return from(this.roleRepository.update(id, role));
   }
   deleteOneRole(id: number): Observable<DeleteResult> {

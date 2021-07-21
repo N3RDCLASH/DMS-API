@@ -21,6 +21,7 @@ import { DocumentBuilder } from '../document.builder';
 import { UserBuilder } from 'src/users/user.builder';
 import jwt_decode from 'jwt-decode';
 import { ApiTags } from '@nestjs/swagger';
+import { ShareDocumentDto, UploadFileDto } from '../models/document.interface';
 
 @ApiTags('documents')
 @Controller('documents')
@@ -30,7 +31,7 @@ export class DocumentsController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', uploadOptions))
   uploadFile(
-    @UploadedFile()
+    @Body() uploadFileDto: UploadFileDto,
     file: Express.Multer.File,
     @Req() req: Request,
   ) {
@@ -51,8 +52,11 @@ export class DocumentsController {
   }
 
   @Post(':id/share')
-  shareDocument(@Body() body) {
-    console.log(body);
+  shareDocument(
+    @Param('id') id: number,
+    @Body() shareDocumentDto: ShareDocumentDto,
+  ) {
+    console.log(id, shareDocumentDto);
     return;
   }
 }

@@ -1,7 +1,7 @@
-import { Role } from './models/role.interface';
+import { CreateRoleDto } from './models/role.interface';
 
 export class RoleBuilder {
-  private readonly _role: Role;
+  private readonly _role: CreateRoleDto;
   constructor() {
     this._role = {
       name: '',
@@ -11,7 +11,7 @@ export class RoleBuilder {
     this._role.name = name;
     return this;
   }
-  build(): Role {
+  build(): CreateRoleDto {
     return this._role;
   }
 }
