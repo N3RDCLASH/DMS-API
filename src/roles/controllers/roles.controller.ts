@@ -9,6 +9,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
@@ -17,12 +18,14 @@ import { Role } from '../models/role.entity';
 import { RoleBuilder } from '../role.builder';
 import { RolesService } from '../service/roles.service';
 @UseGuards(JwtAuthGuard)
+@ApiTags('roles')
 @Controller('roles')
 export class RolesController {
   constructor(
     private readonly rolesService: RolesService,
     private readonly permissionService: PermissionsService,
   ) {}
+  // TODO: rewrite using dto
   @Post()
   createRole(@Body() body) {
     const { name } = body;

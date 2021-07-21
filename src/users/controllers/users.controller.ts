@@ -15,11 +15,14 @@ import { UserBuilder } from '../user.builder';
 import { HttpExceptionFilter } from '../../filters/http-exception.filter';
 import { AuthService as Auth } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
-
+import { RolesGuard } from 'src/auth/gaurds/roles.guard';
+import { hasRole } from 'src/auth/decorators/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(
@@ -27,7 +30,9 @@ export class UsersController {
     private auth: Auth,
   ) {}
   @Post()
+  @hasRole('admin')
   async createUser(@Body() body): Promise<Object> {
+    // todo: rewrite using OpenApi DTO
     const { firstname, lastname, username, password, email } = body;
     // builder pattern
     let user = new UserBuilder()
@@ -41,6 +46,7 @@ export class UsersController {
     return this.usersService.createUser(user);
   }
   @Get()
+  @hasRole('admin')
   getUsers(): Object {
     return this.usersService.findAllUsers();
   }
@@ -69,6 +75,7 @@ export class UsersController {
     return this.usersService.updateSingleUser(id, user);
   }
   @Delete(':id')
+  @hasRole('admin')
   deleteUser(@Param('id') id: number): Object {
     return this.usersService.deleteUser(id);
   }

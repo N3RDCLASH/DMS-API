@@ -20,7 +20,9 @@ import {
 import { DocumentBuilder } from '../document.builder';
 import { UserBuilder } from 'src/users/user.builder';
 import jwt_decode from 'jwt-decode';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('documents')
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentService: DocumentsService) {}
@@ -35,7 +37,7 @@ export class DocumentsController {
     const {
       user: { id },
     } = getUserFromRequestToken(req);
-    
+
     let document = new DocumentBuilder()
       .setFile(file.path)
       .setOwnerID(id)
