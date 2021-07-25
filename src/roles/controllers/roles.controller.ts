@@ -9,7 +9,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
@@ -20,6 +20,7 @@ import { CreateRolePermissionDto } from '../models/role.interface';
 import { RoleBuilder } from '../role.builder';
 import { RolesService } from '../service/roles.service';
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @ApiTags('roles')
 @Controller('roles')
 export class RolesController {

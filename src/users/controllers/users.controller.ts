@@ -17,12 +17,13 @@ import { AuthService as Auth } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { hasRole } from 'src/auth/decorators/roles.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto } from '../models/user.interface';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {

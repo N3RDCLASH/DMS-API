@@ -20,10 +20,11 @@ import {
 import { DocumentBuilder } from '../document.builder';
 import { UserBuilder } from 'src/users/user.builder';
 import jwt_decode from 'jwt-decode';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ShareDocumentDto, UploadFileDto } from '../models/document.interface';
 
 @ApiTags('documents')
+@ApiBearerAuth()
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentService: DocumentsService) {}
