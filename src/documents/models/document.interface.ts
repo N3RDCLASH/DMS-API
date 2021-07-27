@@ -1,16 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/users/models/user.entity';
+import { Timestamp } from 'typeorm';
 
-export class UploadFileDto {
-  @ApiProperty({ type: 'string', format: 'binary' })
-  file: any;
-}
-export class CreateDocumentDto {
-  @ApiProperty()
+export interface Document {
   file: string;
-  @ApiProperty()
   owner_id: number;
-}
-export class ShareDocumentDto {
-  @ApiProperty()
-  user_id: number;
+  created_at?: Timestamp;
+
+  updated_at?: Timestamp;
+
+  deleted_at?: Timestamp;
+
+  shared_users?: User[];
 }

@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, Timestamp } from 'typeorm';
+import { type } from 'os';
+import { User } from 'src/users/models/user.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Timestamp,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
 @Entity({ name: 'documents', synchronize: false })
 export class Document {
@@ -19,4 +28,11 @@ export class Document {
 
   @Column({ type: 'timestamp' })
   deleted_at: Timestamp;
+  @ManyToMany((type) => User)
+  @JoinTable({
+    name: 'document_shared_with_user',
+    joinColumns: [{ name: 'document_id' }],
+    inverseJoinColumns: [{ name: 'user_id' }],
+  })
+  shared_users: User[];
 }

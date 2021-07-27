@@ -21,7 +21,7 @@ import { DocumentBuilder } from '../document.builder';
 import { UserBuilder } from 'src/users/user.builder';
 import jwt_decode from 'jwt-decode';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ShareDocumentDto, UploadFileDto } from '../models/document.interface';
+import { ShareDocumentDto, UploadFileDto } from '../models/document.dto';
 
 @ApiTags('documents')
 @ApiBearerAuth()
@@ -51,13 +51,14 @@ export class DocumentsController {
   getAllDocumentsByUser(@Query('user_id') owner_id: number) {
     return this.documentService.findAllDocumentsByUser(owner_id);
   }
-
+  // todo: add documentshare fucntionality to controller
   @Post(':id/share')
   shareDocument(
-    @Param('id') id: number,
+    @Param('id') document_id: number,
     @Body() shareDocumentDto: ShareDocumentDto,
   ) {
-    console.log(id, shareDocumentDto);
-    return;
+    const { user_id } = shareDocumentDto;
+    console.log(document_id, shareDocumentDto);
+    return this.documentService.shareDocumentWithUser(document_id, user_id);
   }
 }
