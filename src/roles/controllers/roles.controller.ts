@@ -15,8 +15,8 @@ import { map } from 'rxjs/operators';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { PermissionsService } from 'src/permissions/service/permissions.service';
 import { Role } from '../models/role.entity';
-import { CreateRoleDto } from '../models/role.interface';
-import { CreateRolePermissionDto } from '../models/role.interface';
+import { CreateRoleDto } from '../models/role.dto';
+import { CreateRolePermissionDto } from '../models/role.dto';
 import { RoleBuilder } from '../role.builder';
 import { RolesService } from '../service/roles.service';
 @UseGuards(JwtAuthGuard)

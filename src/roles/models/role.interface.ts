@@ -1,12 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Permission } from 'src/permissions/models/permission.entity';
+import { Timestamp } from 'typeorm';
 
-export class CreateRoleDto {
-  @ApiProperty()
+export interface Role {
+  id: number;
   name: string;
-}
+  created_at?: Timestamp;
 
-export class CreateRolePermissionDto {
-  @ApiProperty()
-  permission_id: number;
-}
+  updated_at?: Timestamp;
 
+  deleted_at?: Timestamp;
+
+  permissions?: Permission[];
+}

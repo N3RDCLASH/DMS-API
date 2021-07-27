@@ -1,4 +1,4 @@
-import { CreateRoleDto } from './models/role.interface';
+import { CreateRoleDto } from './models/role.dto';
 
 export class RoleBuilder {
   private readonly _role: CreateRoleDto;

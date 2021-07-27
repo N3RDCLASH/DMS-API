@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Permission as PermissionEntity } from 'src/permissions/models/permission.entity';
 import { DeleteResult, getRepository, Repository, UpdateResult } from 'typeorm';
 import { Role as RoleEntity } from '../models/role.entity';
-import { CreateRoleDto } from '../models/role.interface';
+import { CreateRoleDto } from '../models/role.dto';
 
 const roleRelations = { relations: ['permissions'] };
 @Injectable()
