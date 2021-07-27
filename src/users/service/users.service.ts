@@ -80,6 +80,8 @@ export class UsersService {
           map((jwt) => ({
             ...user,
             token: jwt,
+            expires_at: this.auth.generateJWTExpireDate(),
+            issued_at: new Date(),
           })),
         );
       }),

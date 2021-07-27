@@ -14,7 +14,7 @@ import { RolesGuard } from './gaurds/roles.guard';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },
+        signOptions: { expiresIn: configService.get('EXPIRES_IN') },
       }),
     }),
     forwardRef(() => UsersModule),
