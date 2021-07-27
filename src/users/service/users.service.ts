@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { User as UserEntity } from '../models/user.entity';
-import { CreateUserDto } from '../models/user.interface';
+import { User } from '../models/user.interface';
 import { QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
@@ -24,7 +24,7 @@ export class UsersService {
   ) {}
 
   // create a new user
-  createUser(user: CreateUserDto): Observable<Object> {
+  createUser(user: User): Observable<Object> {
     return from(this.userRepository.save(user));
   }
   // find all users
@@ -37,7 +37,7 @@ export class UsersService {
     );
   }
   // find single user by id
-  findSingleUser(id: number): Observable<CreateUserDto> {
+  findSingleUser(id: number): Observable<User> {
     return from(this.userRepository.findOne(id, { ...userRelations })).pipe(
       map((user: UserEntity) => {
         const { password, ...result } = user;
@@ -46,7 +46,7 @@ export class UsersService {
     );
   }
   // find single user by username
-  findSingleUserByUsername(username: String): Observable<CreateUserDto> {
+  findSingleUserByUsername(username: String): Observable<User> {
     return from(
       this.userRepository.findOne({
         where: { username: username },
@@ -55,7 +55,7 @@ export class UsersService {
     );
   }
   // find single user by email
-  findSingleUserByEmail(email: String): Observable<CreateUserDto> {
+  findSingleUserByEmail(email: String): Observable<User> {
     return from(
       this.userRepository.findOne({
         where: { email },
@@ -64,9 +64,7 @@ export class UsersService {
     );
   }
   // update single user
-  updateSingleUser(id: number, data: CreateUserDto): Observable<Object> {
-    delete data.email;
-    delete data.password;
+  updateSingleUser(id: number, data: User): Observable<Object> {
     return from(this.userRepository.update(id, data));
   }
   // delete single user
@@ -76,11 +74,14 @@ export class UsersService {
   // login user
   login(email: string, password: string): Observable<Object> {
     return from(this.validateUser(email, password)).pipe(
-      switchMap((user: CreateUserDto) => {
+      switchMap((user: User) => {
         delete user.password;
-        return this.auth
-          .generateJWT(user)
-          .pipe(map((jwt) => ({ ...user, token: jwt })));
+        return this.auth.generateJWT(user).pipe(
+          map((jwt) => ({
+            ...user,
+            token: jwt,
+          })),
+        );
       }),
     );
   }
@@ -101,7 +102,7 @@ export class UsersService {
       });
 
     return from(this.findSingleUserByEmail(email)).pipe(
-      switchMap((user: CreateUserDto) => {
+      switchMap((user: User) => {
         if (user)
           return this.auth.comparePasswords(password, user.password).pipe(
             map((match: Boolean) => {

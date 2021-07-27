@@ -18,7 +18,7 @@ import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { hasRole } from 'src/auth/decorators/roles.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto } from '../models/user.interface';
+import { CreateUserDto, UpdateUserDto } from '../models/user.dto';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())

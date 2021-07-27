@@ -1,7 +1,7 @@
-import { CreateUserDto } from './models/user.interface';
+import { User } from './models/user.interface';
 
 export class UserBuilder {
-  private readonly _user: CreateUserDto;
+  private readonly _user: User;
   constructor() {
     this._user = {
       firstname: '',
@@ -32,7 +32,7 @@ export class UserBuilder {
     this._user.password = password;
     return this;
   }
-  build(): CreateUserDto {
+  build(): User {
     return this._user;
   }
 }

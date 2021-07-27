@@ -1,22 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Timestamp } from "typeorm";
 
-export class CreateUserDto {
-  @ApiProperty()
+export interface User {
   firstname?: string;
-  @ApiProperty()
   lastname?: string;
-  @ApiProperty()
   username?: string;
-  @ApiProperty()
   email?: string;
-  @ApiProperty()
   password?: string;
-}
-export class UpdateUserDto {
-  @ApiProperty()
-  firstname: string;
-  @ApiProperty()
-  lastname: string;
-  @ApiProperty()
-  username: string;
+  created_at?: Timestamp;
+
+  updated_at?: Timestamp;
+
+  deleted_at?: Timestamp;
 }
