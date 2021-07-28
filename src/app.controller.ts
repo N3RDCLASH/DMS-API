@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { UsersService } from './users/service/users.service';
 import { AppService } from './app.service';
+import { LoginUserDto } from './users/models/user.dto';
 
 @Controller()
 export class AppController {
@@ -14,8 +15,8 @@ export class AppController {
     return this.appService.getHello();
   }
   @Post('login')
-  login(@Body() body: any): Object {
-    const { email, password } = body;
+  login(@Body() loginUserDto: LoginUserDto): Object {
+    const { email, password } = loginUserDto;
     return this.userService.login(email, password);
   }
 }

@@ -20,3 +20,10 @@ export class UpdateUserDto {
   @ApiProperty()
   username: string;
 }
+
+export class LoginUserDto {
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  password: string;
+}
