@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Timestamp,
+} from 'typeorm';
 
 @Entity({ name: 'permissions', synchronize: false })
 export class Permission {
@@ -15,5 +21,6 @@ export class Permission {
   updated_at: Timestamp;
 
   @Column({ type: 'timestamp' })
+  @DeleteDateColumn()
   deleted_at: Timestamp;
 }

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
-import { PermissionsController } from './controlleres/permissions.controller';
+import { PermissionsController } from './controllers/permissions.controller';
 import { Permission } from './models/permission.entity';
 import { PermissionsService } from './service/permissions.service';
 
