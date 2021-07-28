@@ -73,16 +73,18 @@ CREATE TABLE user_has_roles(
 );
 CREATE TABLE role_has_permissions(
     id INT NOT NULL AUTO_INCREMENT UNIQUE,
-    permission_id INT NOT NULL PRIMARY KEY,
-    role_id INT NOT NULL PRIMARY KEY
+    permission_id INT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY(permission_id, role_id)
 );
 CREATE TABLE document_shared_with_user(
     id INT NOT NULL AUTO_INCREMENT UNIQUE,
-    document_id INT NOT NULL PRIMARY KEY,
-    user_id INT NOT NULL PRIMARY KEY,
+    document_id INT NOT NULL,
+    user_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL,
-    deleted_at TIMESTAMP NULL
+    deleted_at TIMESTAMP NULL,
+    PRIMARY KEY(document_id, user_id)
 );
 ALTER TABLE `user_has_roles`
 ADD CONSTRAINT `user_has_roles_role_id_foreign` FOREIGN KEY(`role_id`) REFERENCES `roles`(`id`);
