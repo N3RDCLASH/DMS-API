@@ -53,7 +53,7 @@ export class UsersController {
     return this.usersService.findAllUsers();
   }
 
-  @Get()
+  
   getUserByUsername(@Param('username') username: String): Object {
     return this.usersService.findSingleUserByUsername(username);
   }

@@ -6,6 +6,7 @@ import {
   Timestamp,
   ManyToMany,
   JoinTable,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'users', synchronize: false })
@@ -35,6 +36,7 @@ export class User {
   updated_at: Timestamp;
 
   @Column({ type: 'timestamp' })
+  @DeleteDateColumn()
   deleted_at: Timestamp;
 
   @ManyToMany(() => Role)

@@ -69,7 +69,7 @@ export class UsersService {
   }
   // delete single user
   deleteUser(id: number): Observable<Object> {
-    return from(this.userRepository.delete(id));
+    return from(this.userRepository.softDelete(id));
   }
   // login user
   login(email: string, password: string): Observable<Object> {
