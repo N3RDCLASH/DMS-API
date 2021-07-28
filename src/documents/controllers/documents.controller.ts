@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Header,
   Param,
@@ -51,6 +52,15 @@ export class DocumentsController {
   getAllDocumentsByUser(@Query('user_id') owner_id: number) {
     return this.documentService.findAllDocumentsByUser(owner_id);
   }
+  @Get(':id')
+  getOneDocument(@Param('id') id: number) {
+    return this.documentService.findSingleDocument(id);
+  }
+  @Delete(':id')
+  deleteOneDocument(@Param('id') id: number) {
+    return this.documentService.deleteOneDocument(id);
+  }
+
   // todo: add documentshare fucntionality to controller
   @Post(':id/share')
   shareDocument(

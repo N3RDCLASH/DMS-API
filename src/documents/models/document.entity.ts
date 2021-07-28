@@ -7,6 +7,7 @@ import {
   Timestamp,
   ManyToMany,
   JoinTable,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'documents', synchronize: false })
@@ -27,8 +28,9 @@ export class Document {
   updated_at: Timestamp;
 
   @Column({ type: 'timestamp' })
+  @DeleteDateColumn()
   deleted_at: Timestamp;
-  @ManyToMany((type) => User)
+  @ManyToMany(() => User)
   @JoinTable({
     name: 'document_shared_with_user',
     joinColumns: [{ name: 'document_id' }],
