@@ -30,14 +30,14 @@ export class RolesService {
     return from(this.roleRepository.update(id, role));
   }
   deleteOneRole(id: number): Observable<DeleteResult> {
-    return from(this.roleRepository.delete(id));
+    return from(this.roleRepository.softDelete(id));
   }
 
   addPermissiontoRole(role: RoleEntity, permission: PermissionEntity) {
     role.permissions = [permission];
     return from(this.roleRepository.save(role));
   }
-  removePermissionfromRole( 
+  removePermissionfromRole(
     role: RoleEntity,
     permissionToRemove: PermissionEntity,
   ) {

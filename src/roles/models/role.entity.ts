@@ -1,5 +1,5 @@
 import { Permission } from 'src/permissions/models/permission.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
 @Entity({ name: 'roles', synchronize: false })
 export class Role {
@@ -14,6 +14,7 @@ export class Role {
   updated_at: Timestamp;
 
   @Column({ type: 'timestamp' })
+  @DeleteDateColumn()
   deleted_at: Timestamp;
 
   @ManyToMany(() => Permission)
