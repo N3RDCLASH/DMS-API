@@ -109,7 +109,11 @@ export class UsersService {
           return this.auth.comparePasswords(password, user.password).pipe(
             map((match: Boolean) => {
               if (match) return user;
-              throw new UnauthorizedException();
+              throw new UnauthorizedException({
+                statusCode: 401,
+                type: 'Unauthorized',
+                message: 'Invalid Credentials!',
+              });
             }),
           );
 

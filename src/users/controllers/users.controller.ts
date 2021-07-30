@@ -59,7 +59,11 @@ export class UsersController {
 
   @Get(':id')
   getUserById(@Param('id') id: number): Object {
-    return this.usersService.findSingleUser(id);
+    if (!id || id == undefined || isNaN(id)) {
+      throw new BadRequestException();
+    } else {
+      return this.usersService.findSingleUser(id);
+    }
   }
   @Put(':id')
   async updateUserById(
@@ -76,6 +80,9 @@ export class UsersController {
       .setLastName(lastname)
       .setUserName(username)
       .build();
+
+    delete user.email;
+    delete user.password;
     return this.usersService.updateSingleUser(id, user);
   }
   @Delete(':id')
