@@ -53,7 +53,6 @@ export class UsersController {
     return this.usersService.findAllUsers();
   }
 
-  
   getUserByUsername(@Param('username') username: String): Object {
     return this.usersService.findSingleUserByUsername(username);
   }
@@ -69,7 +68,7 @@ export class UsersController {
   ): Promise<Object> {
     const { firstname, lastname, username } = updateUserDto;
     if (!firstname || !lastname || !username) {
-      throw BadRequestException;
+      throw new BadRequestException();
     }
     // builder pattern
     let user = new UserBuilder()
