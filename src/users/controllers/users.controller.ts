@@ -3,7 +3,9 @@ import {
   Body,
   Controller,
   Delete,
+  forwardRef,
   Get,
+  Inject,
   Param,
   Post,
   Put,
@@ -18,7 +20,11 @@ import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { hasRole } from 'src/auth/decorators/roles.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto } from '../models/user.dto';
+import { CreateUserDto, UpdateUserDto, UserRoleDto } from '../models/user.dto';
+import { RolesService } from 'src/roles/service/roles.service';
+import { User } from '../models/user.interface';
+import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
@@ -29,6 +35,8 @@ import { CreateUserDto, UpdateUserDto } from '../models/user.dto';
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => RolesService))
+    private readonly roleService: RolesService,
     private auth: Auth,
   ) {}
   @Post()
@@ -53,12 +61,12 @@ export class UsersController {
     return this.usersService.findAllUsers();
   }
 
-  getUserByUsername(@Param('username') username: String): Object {
+  getUserByUsername(@Param('username') username: String): Observable<User> {
     return this.usersService.findSingleUserByUsername(username);
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: number): Object {
+  getUserById(@Param('id') id: number): Observable<User> {
     if (!id || id == undefined || isNaN(id)) {
       throw new BadRequestException();
     } else {
@@ -89,5 +97,28 @@ export class UsersController {
   @hasRole('admin')
   deleteUser(@Param('id') id: number): Object {
     return this.usersService.deleteUser(id);
+  }
+
+  @Post(':id/roles')
+  async addRoleToUser(
+    @Param('id') user_id: number,
+    @Body() userRoleDto: UserRoleDto,
+  ) {
+    const { role_id } = userRoleDto;
+    const role = await this.roleService.findOneRole(role_id);
+
+    this.usersService.addRoleToUser(user_id, role);
+  }
+  
+  @Delete(':id/roles')
+  async removeRoleFromUser(
+    @Param('id') user_id: number,
+    @Body() userRoleDto: UserRoleDto,
+  ) {
+    const { role_id } = userRoleDto;
+    
+    const role = await this.roleService.findOneRole(role_id);
+
+    this.usersService.removeRoleFromUser(user_id, role);
   }
 }

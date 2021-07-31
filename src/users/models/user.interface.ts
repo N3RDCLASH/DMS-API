@@ -1,4 +1,5 @@
-import { Timestamp } from "typeorm";
+import { Role } from 'src/roles/models/role.entity';
+import { Timestamp } from 'typeorm';
 
 export interface User {
   firstname?: string;
@@ -11,4 +12,5 @@ export interface User {
   updated_at?: Timestamp;
 
   deleted_at?: Timestamp;
+  roles?: Role[];
 }
