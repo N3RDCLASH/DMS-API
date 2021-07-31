@@ -34,7 +34,7 @@ export class RolesService {
   }
 
   addPermissiontoRole(role: RoleEntity, permission: PermissionEntity) {
-    role.permissions = [permission];
+    role.permissions.push(permission);
     return from(this.roleRepository.save(role));
   }
   removePermissionfromRole(
