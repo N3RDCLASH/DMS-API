@@ -27,3 +27,8 @@ export class LoginUserDto {
   @ApiProperty()
   password: string;
 }
+
+export class UserRoleDto {
+  @ApiProperty()
+  role_id: number;
+}
