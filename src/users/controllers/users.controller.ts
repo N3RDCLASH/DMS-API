@@ -105,20 +105,22 @@ export class UsersController {
     @Body() userRoleDto: UserRoleDto,
   ) {
     const { role_id } = userRoleDto;
-    const role = await this.roleService.findOneRole(role_id);
+    if (!role_id) throw new BadRequestException();
 
-    this.usersService.addRoleToUser(user_id, role);
+    const role = await this.roleService.findOneRole(role_id);
+    return this.usersService.addRoleToUser(user_id, role);
   }
-  
+
   @Delete(':id/roles')
   async removeRoleFromUser(
     @Param('id') user_id: number,
     @Body() userRoleDto: UserRoleDto,
   ) {
     const { role_id } = userRoleDto;
-    
-    const role = await this.roleService.findOneRole(role_id);
 
-    this.usersService.removeRoleFromUser(user_id, role);
+    if (!role_id) throw new BadRequestException();
+
+    const role = await this.roleService.findOneRole(role_id);
+    return this.usersService.removeRoleFromUser(user_id, role);
   }
 }

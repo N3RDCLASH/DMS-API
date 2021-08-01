@@ -63,7 +63,7 @@ export class RolesController {
   }
 
   // TODO: add/remove permission to role
-  @Post(':id/permission')
+  @Post(':id/permissions')
   async addPermissionToRole(
     @Param('id') role_id: number,
     @Body() createRolePermissionDto: CreateRolePermissionDto,
@@ -76,7 +76,7 @@ export class RolesController {
     return this.rolesService.addPermissiontoRole(role, permission);
   }
 
-  @Delete(':id/permission')
+  @Delete(':id/permissions')
   async removePermissionFromRole(
     @Param('id') role_id: number,
     @Body() createRolePermissionDto: CreateRolePermissionDto,

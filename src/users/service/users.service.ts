@@ -129,18 +129,17 @@ export class UsersService {
 
   async addRoleToUser(user_id: number, role: Role) {
     let user = await this.userRepository.findOne(user_id, userRelations);
+    // push role to be added to roles array
     user.roles.push(role);
-    console.log(user);
     return await this.userRepository.save(user).catch((err) => {
       throw console.log(err);
     });
   }
 
-  async removeRoleFromUser(user_id: number, roleToBeRemoved: Role) {
+  async removeRoleFromUser(user_id: number, roleToRemove: Role) {
     let user = await this.userRepository.findOne(user_id, userRelations);
-    user.roles = user.roles.filter((role) => {
-      role.id !== roleToBeRemoved.id;
-    });
+    // filter role to remove out of roles array
+    user.roles = user.roles.filter((role) => role.id !== roleToRemove.id);
     return await this.userRepository.save(user).catch((err) => {
       throw console.log(err);
     });

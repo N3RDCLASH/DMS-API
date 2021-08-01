@@ -41,9 +41,10 @@ export class RolesService {
     role: RoleEntity,
     permissionToRemove: PermissionEntity,
   ) {
-    role.permissions = role.permissions.filter((permission) => {
-      permission.id !== permissionToRemove.id;
-    });
+    role.permissions = role.permissions.filter(
+      (permission) => permission.id !== permissionToRemove.id,
+    );
+    
     return from(this.roleRepository.save(role));
   }
 }
