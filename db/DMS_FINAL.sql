@@ -67,12 +67,10 @@ CREATE TABLE permissions(
     deleted_at TIMESTAMP NULL
 );
 CREATE TABLE user_has_roles(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     role_id INT NOT NULL
 );
 CREATE TABLE role_has_permissions(
-    id INT NOT NULL AUTO_INCREMENT UNIQUE,
     permission_id INT NOT NULL,
     role_id INT NOT NULL,
     PRIMARY KEY(permission_id, role_id)
