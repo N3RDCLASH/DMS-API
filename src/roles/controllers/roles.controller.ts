@@ -19,7 +19,8 @@ import { CreateRoleDto } from '../models/role.dto';
 import { CreateRolePermissionDto } from '../models/role.dto';
 import { RoleBuilder } from '../role.builder';
 import { RolesService } from '../service/roles.service';
-@UseGuards(JwtAuthGuard)
+import { RolesGuard } from 'src/auth/gaurds/roles.guard';
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 @ApiTags('roles')
 @Controller('roles')

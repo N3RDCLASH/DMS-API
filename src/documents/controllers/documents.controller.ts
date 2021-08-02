@@ -10,6 +10,7 @@ import {
   Req,
   Request,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,9 +24,12 @@ import { UserBuilder } from 'src/users/user.builder';
 import jwt_decode from 'jwt-decode';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ShareDocumentDto, UploadFileDto } from '../models/document.dto';
+import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
+import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 
 @ApiTags('documents')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentService: DocumentsService) {}
