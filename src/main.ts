@@ -13,9 +13,8 @@ async function bootstrap() {
   // Swagger Documentation Setup
   const config = new DocumentBuilder()
     .setTitle('DMS API Documentation')
-    .setDescription('The DMS API description')
+    .setDescription('The Qualogy Document Management Sytem')
     .setVersion('1.0')
-    .addTag('dms')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
