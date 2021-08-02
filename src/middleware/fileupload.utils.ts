@@ -26,12 +26,12 @@ function validateUploadRequest(req, file, cb) {
   const {
     user: { id },
   } = req;
+  
   if (!file || !id) {
     return cb(new BadRequestException());
     // throw ;
   }
 
-  console.log(mimeTypeIsValid(file));
   if (!mimeTypeIsValid(file)) {
     console.log('test');
     return cb(new UnsupportedMediaTypeException());
