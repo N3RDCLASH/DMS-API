@@ -25,8 +25,7 @@ export const uploadOptions: MulterOptions = {
 function validateUploadRequest(req, file, cb) {
   const {
     user: { id },
-  } = getUserFromRequestToken(req);
-  console.log(id);
+  } = req;
   if (!file || !id) {
     return cb(new BadRequestException());
     // throw ;
