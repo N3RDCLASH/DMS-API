@@ -29,7 +29,7 @@ import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 
 @ApiTags('documents')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentService: DocumentsService) {}
@@ -38,7 +38,7 @@ export class DocumentsController {
   @UseInterceptors(FileInterceptor('file', uploadOptions))
   uploadFile(
     @Body() uploadFileDto: UploadFileDto,
-    file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
   ) {
     const {
