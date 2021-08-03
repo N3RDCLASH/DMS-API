@@ -9,6 +9,7 @@ import {
   Query,
   Req,
   Request,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -26,6 +27,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ShareDocumentDto, UploadFileDto } from '../models/document.dto';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
+import { createReadStream } from 'fs';
+import { join } from 'path';
+import { map } from 'rxjs/operators';
 
 @ApiTags('documents')
 @ApiBearerAuth()
@@ -59,6 +63,16 @@ export class DocumentsController {
   @Get(':id')
   getOneDocument(@Param('id') id: number) {
     return this.documentService.findSingleDocument(id);
+  }
+  @Get(':id/download')
+  downloadOneDocument(@Param('id') id: number) {
+    console.log('document');
+    return this.documentService.findSingleDocument(id).pipe(
+      map((document) => {
+        const file = createReadStream(join(process.cwd(), document.file));
+        return new StreamableFile(file);
+      }),
+    );
   }
   @Delete(':id')
   deleteOneDocument(@Param('id') id: number) {
