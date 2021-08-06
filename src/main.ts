@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // enable cors for API
-  app.enableCors();
+  app.enableCors({ exposedHeaders: [' X-Suggested-Filename'] });
   app.use(helmet());
 
   // Swagger Documentation Setup
