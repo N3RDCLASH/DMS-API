@@ -12,6 +12,7 @@ const ACCEPTED_MIME_TYPES = [
   'image/png',
   'image/svg+xml',
   'image/webp',
+  'application/pdf',
 ];
 
 export const uploadOptions: MulterOptions = {
@@ -26,7 +27,7 @@ function validateUploadRequest(req, file, cb) {
   const {
     user: { id },
   } = req;
-  
+
   if (!file || !id) {
     return cb(new BadRequestException());
     // throw ;

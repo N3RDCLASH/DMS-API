@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { from, Observable } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Document } from '../models/document.interface';
@@ -24,11 +24,12 @@ export class DocumentsService {
   }
 
   findSingleDocument(id: number): Observable<Document> {
+    if (id == undefined) throw new BadRequestException();
     return from(this.documentRepository.findOne(id));
   }
-  
-  deleteOneDocument(id:number){
-    return from(this.documentRepository.softDelete(id))
+
+  deleteOneDocument(id: number) {
+    return from(this.documentRepository.softDelete(id));
   }
 
   async shareDocumentWithUser(document_id: number, user_id: number) {
