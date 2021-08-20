@@ -1,21 +1,22 @@
+import { AuditingBase } from 'src/auditingbase/auditingbase';
 import { Permission } from 'src/permissions/models/permission.entity';
-import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  Timestamp,
+} from 'typeorm';
 
 @Entity({ name: 'roles', synchronize: false })
-export class Role {
+export class Role extends AuditingBase {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   name: string;
-  @Column({ type: 'timestamp' })
-  created_at: Timestamp;
-
-  @Column({ type: 'timestamp' })
-  updated_at: Timestamp;
-
-  @Column({ type: 'timestamp' })
-  @DeleteDateColumn()
-  deleted_at: Timestamp;
 
   @ManyToMany(() => Permission)
   @JoinTable({
