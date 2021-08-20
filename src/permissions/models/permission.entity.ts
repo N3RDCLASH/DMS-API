@@ -1,3 +1,4 @@
+import { AuditingBase } from 'src/auditingbase/auditingbase';
 import {
   Column,
   DeleteDateColumn,
@@ -7,20 +8,10 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'permissions', synchronize: false })
-export class Permission {
+export class Permission extends AuditingBase {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
-
-  @Column({ type: 'timestamp' })
-  created_at: Timestamp;
-
-  @Column({ type: 'timestamp' })
-  updated_at: Timestamp;
-
-  @Column({ type: 'timestamp' })
-  @DeleteDateColumn()
-  deleted_at: Timestamp;
 }
