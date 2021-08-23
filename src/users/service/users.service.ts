@@ -9,8 +9,8 @@ import { User } from '../models/user.interface';
 import { QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
-import { from, Observable, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Role } from 'src/roles/models/role.entity';
 
 const userRelations = { relations: ['roles', 'roles.permissions'] };
@@ -153,7 +153,7 @@ export class UsersService {
     // filter role to remove out of roles array
     user.roles = user.roles.filter((role) => role.id !== roleToRemove.id);
     return await this.userRepository.save(user).catch((err) => {
-      throw console.log(err);
+      throw Error(err);
     });
   }
 }
