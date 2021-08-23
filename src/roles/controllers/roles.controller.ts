@@ -20,6 +20,7 @@ import { CreateRolePermissionDto } from '../models/role.dto';
 import { RoleBuilder } from '../role.builder';
 import { RolesService } from '../service/roles.service';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
+
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 @ApiTags('roles')
@@ -32,13 +33,7 @@ export class RolesController {
   // TODO: rewrite using dto
   @Post()
   createRole(@Body() createRoleDto: CreateRoleDto) {
-    const { name } = createRoleDto;
-
-    if (!name) {
-      throw new BadRequestException();
-    }
-    const role = new RoleBuilder().setName(name).build();
-    return this.rolesService.createRole(role);
+    return this.rolesService.createRole(createRoleDto);
   }
   @Get()
   getAllRoles(): Object {
@@ -50,12 +45,7 @@ export class RolesController {
   }
   @Put(':id')
   updateOneRole(@Param('id') id: number, @Body() createRoleDto: CreateRoleDto) {
-    const { name } = createRoleDto;
-    if (!name) {
-      throw new BadRequestException();
-    }
-    const role = new RoleBuilder().setName(name).build();
-    return this.rolesService.updateOneRole(id, role);
+    return this.rolesService.updateOneRole(id, createRoleDto);
   }
 
   @Delete(':id')
