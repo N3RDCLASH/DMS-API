@@ -18,17 +18,18 @@ import { HttpExceptionFilter } from '../../filters/http-exception.filter';
 import { AuthService as Auth } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
-import { hasRole } from 'src/auth/decorators/roles.decorator';
+import { hasPermission } from 'src/auth/decorators/permissions.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto, UserRoleDto } from '../models/user.dto';
 import { RolesService } from 'src/roles/service/roles.service';
 import { User } from '../models/user.interface';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { CREATE_USER, DELETE_USER,READ_USER, UPDATE_USER } from 'src/permissions/constants/permissions.constants';
+import { PermissionGuard } from 'src/auth/gaurds/permissions.guard';
+import { Observable } from 'rxjs';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionGuard)
 @ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
@@ -39,8 +40,9 @@ export class UsersController {
     private readonly roleService: RolesService,
     private auth: Auth,
   ) {}
+
   @Post()
-  @hasRole('admin')
+  @hasPermission(CREATE_USER)
   async createUser(@Body() createUserDto: CreateUserDto): Promise<Object> {
     // todo: rewrite using OpenApi DTO
     const { firstname, lastname, username, password, email } = createUserDto;
@@ -55,8 +57,9 @@ export class UsersController {
 
     return this.usersService.createUser(user);
   }
+
   @Get()
-  @hasRole('admin')
+  @hasPermission(READ_USER)
   getUsers(): Object {
     return this.usersService.findAllUsers();
   }
@@ -66,6 +69,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @hasPermission(READ_USER)
   getUserById(@Param('id') id: number): Observable<User> {
     if (!id || id == undefined || isNaN(id)) {
       throw new BadRequestException();
@@ -73,7 +77,9 @@ export class UsersController {
       return this.usersService.findSingleUser(id);
     }
   }
+
   @Put(':id')
+  @hasPermission(UPDATE_USER)
   async updateUserById(
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -93,8 +99,9 @@ export class UsersController {
     delete user.password;
     return this.usersService.updateSingleUser(id, user);
   }
+
   @Delete(':id')
-  @hasRole('admin')
+  @hasPermission(DELETE_USER)
   deleteUser(@Param('id') id: number): Object {
     return this.usersService.deleteUser(id);
   }
