@@ -28,6 +28,7 @@ export class UsersService {
   createUser(user: User): Observable<Object> {
     return from(this.userRepository.save(user));
   }
+
   // find all users
   findAllUsers(): Observable<Object> {
     return from(this.userRepository.find({ ...userRelations })).pipe(
@@ -37,6 +38,7 @@ export class UsersService {
       }),
     );
   }
+
   // find single user by id
   findSingleUser(id: number): Observable<User> {
     return from(this.userRepository.findOne(id, { ...userRelations })).pipe(
@@ -55,6 +57,7 @@ export class UsersService {
       }),
     );
   }
+
   // find single user by email
   findSingleUserByEmail(email: String): Observable<User> {
     return from(
@@ -64,19 +67,23 @@ export class UsersService {
       }),
     );
   }
+
   // update single user
   updateSingleUser(id: number, data: User): Observable<Object> {
     return from(this.userRepository.update(id, data));
   }
+
   // delete single user
   deleteUser(id: number): Observable<Object> {
     return from(this.userRepository.softDelete(id));
   }
+
   // login user
   login(email: string, password: string): Observable<Object> {
     return from(this.validateUser(email, password)).pipe(
       switchMap((user: User) => {
         delete user.password;
+
         return this.auth.generateJWT(user).pipe(
           map((jwt) => ({
             ...user,
@@ -88,6 +95,7 @@ export class UsersService {
       }),
     );
   }
+
   // validate user credentials
   validateUser(email: string, password: string) {
     if (!email)
@@ -105,18 +113,22 @@ export class UsersService {
       });
 
     return from(this.findSingleUserByEmail(email)).pipe(
-      switchMap((user: User) => {
+      map((user: User) => {
         if (user)
-          return this.auth.comparePasswords(password, user.password).pipe(
-            map((match: Boolean) => {
-              if (match) return user;
-              throw new UnauthorizedException({
-                statusCode: 401,
-                type: 'Unauthorized',
-                message: 'Invalid Credentials!',
-              });
-            }),
-          );
+          return {
+            user,
+            match: this.auth.comparePasswords(password, user.password),
+          };
+
+        throw new UnauthorizedException({
+          statusCode: 401,
+          type: 'Unauthorized',
+          message: 'Invalid Credentials!',
+        });
+      }),
+
+      map(({ match, user }) => {
+        if (match) return user;
 
         throw new UnauthorizedException({
           statusCode: 401,
