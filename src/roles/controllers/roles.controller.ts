@@ -27,6 +27,7 @@ export class RolesController {
     private readonly rolesService: RolesService,
     private readonly permissionService: PermissionsService,
   ) {}
+  
   // TODO: rewrite using dto
   @Post()
   createRole(@Body() createRoleDto: CreateRoleDto) {
