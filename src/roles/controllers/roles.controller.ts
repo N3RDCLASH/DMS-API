@@ -35,14 +35,17 @@ export class RolesController {
   createRole(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.createRole(createRoleDto);
   }
+  
   @Get()
   getAllRoles(): Object {
     return this.rolesService.findAllRoles();
   }
+
   @Get(':id')
   async getOneRole(@Param('id') id: number): Promise<Role> {
     return await this.rolesService.findOneRole(id);
   }
+
   @Put(':id')
   updateOneRole(@Param('id') id: number, @Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.updateOneRole(id, createRoleDto);
