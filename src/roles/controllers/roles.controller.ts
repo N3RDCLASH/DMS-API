@@ -10,14 +10,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { PermissionsService } from 'src/permissions/service/permissions.service';
 import { Role } from '../models/role.entity';
 import { CreateRoleDto } from '../models/role.dto';
 import { CreateRolePermissionDto } from '../models/role.dto';
-import { RoleBuilder } from '../role.builder';
 import { RolesService } from '../service/roles.service';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 
@@ -35,7 +32,7 @@ export class RolesController {
   createRole(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.createRole(createRoleDto);
   }
-  
+
   @Get()
   getAllRoles(): Object {
     return this.rolesService.findAllRoles();
