@@ -9,8 +9,8 @@ import { User } from '../models/user.interface';
 import { QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
-import { from, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { forkJoin, from, Observable, of } from 'rxjs';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { Role } from 'src/roles/models/role.entity';
 
 const userRelations = { relations: ['roles', 'roles.permissions'] };
@@ -113,12 +113,13 @@ export class UsersService {
       });
 
     return from(this.findSingleUserByEmail(email)).pipe(
-      map((user: User) => {
-        if (user)
-          return {
-            user,
+      mergeMap((user: User) => {
+        if (user) {
+          return forkJoin({
+            user: of(user),
             match: this.auth.comparePasswords(password, user.password),
-          };
+          });
+        }
 
         throw new UnauthorizedException({
           statusCode: 401,
@@ -127,7 +128,7 @@ export class UsersService {
         });
       }),
 
-      map(({ match, user }) => {
+      map(({ user, match }) => {
         if (match) return user;
 
         throw new UnauthorizedException({
