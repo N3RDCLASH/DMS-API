@@ -31,6 +31,7 @@ export class Document extends AuditingBase {
   @Column({ type: 'timestamp' })
   @DeleteDateColumn()
   deleted_at: Timestamp;
+  
   @ManyToMany(() => User)
   @JoinTable({
     name: 'document_shared_with_user',

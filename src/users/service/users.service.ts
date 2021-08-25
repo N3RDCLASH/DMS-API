@@ -140,6 +140,7 @@ export class UsersService {
     );
   }
 
+  // todo:rewrite reactively
   async addRoleToUser(user_id: number, role: Role) {
     let user = await this.userRepository.findOne(user_id, userRelations);
     // push role to be added to roles array
@@ -149,6 +150,7 @@ export class UsersService {
     });
   }
 
+  // todo:rewrite reactively
   async removeRoleFromUser(user_id: number, roleToRemove: Role) {
     let user = await this.userRepository.findOne(user_id, userRelations);
     // filter role to remove out of roles array

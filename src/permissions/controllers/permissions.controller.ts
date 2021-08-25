@@ -15,6 +15,7 @@ export class PermissionsController {
   getAllPermissions() {
     return this.permissionsService.findAllPermissions();
   }
+  
   @Get(':id')
   getOnePermissions(@Param('id') id: number) {
     return this.permissionsService.findOnePermission(id);
