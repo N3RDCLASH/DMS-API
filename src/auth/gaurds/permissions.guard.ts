@@ -37,12 +37,10 @@ export class PermissionGuard implements CanActivate {
       map((user: User) => {
         const hasPermission = () => {
           //extract permissions from roles
-          const userPermissions: Permission[] = [];
-          user.roles.map((role) =>
-            role.permissions.map((permission) =>
-              userPermissions.push(permission),
-            ),
-          );
+          //flatten roles + persmission arrays and filter the permissions
+          const userPermissions: Permission[] = user.roles
+            .flatMap((item) => item)
+            .filter((item) => item instanceof Permission);
 
           // search for permission in userpermissions
           const permissionsPassed = permissions
