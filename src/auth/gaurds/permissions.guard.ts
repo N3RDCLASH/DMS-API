@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { map, Observable } from 'rxjs';
+import { Permission } from 'src/permissions/models/permission.entity';
 import { User } from 'src/users/models/user.entity';
 import { UsersService } from 'src/users/service/users.service';
 
@@ -21,12 +22,12 @@ export class PermissionGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const permission = this.reflector.get<string[]>(
+    const permissions = this.reflector.get<string[]>(
       'permission',
       context.getHandler(),
     );
 
-    if (!permission) {
+    if (!permissions) {
       return false;
     }
     const request = context.switchToHttp().getRequest();
@@ -34,20 +35,63 @@ export class PermissionGuard implements CanActivate {
 
     return this.userService.findSingleUser(user.id).pipe(
       map((user: User) => {
-        // references: https://stackoverflow.com/a/25926600/13205801 &&
-        // https://github.com/ThomasOliver545/Blog-with-NestJS-and-Angular/blob/master/api/src/auth/guards/roles.guard.ts
         const hasPermission = () => {
-          // get  permissions from roles
-          const userPermissions = user.roles.map((role) => role.permissions);
-          // search for permission in userpermissions
-          return userPermissions?.find(
-            (permissionToCompare: any) =>
-              permissionToCompare.name == permission,
-          )?.[0]
-            ? true
-            : false;
-        };
+          //extract permissions from roles
+          const userPermissions: Permission[] = [];
+          user.roles.map((role) =>
+            role.permissions.map((permission) =>
+              userPermissions.push(permission),
+            ),
+          );
 
+          // search for permission in userpermissions
+          const permissionsPassed = permissions
+            .map((permission) => {
+              return userPermissions?.filter((permissionToCompare: any) => {
+                console.log(
+                  'permission found:',
+                  permissionToCompare.name == permission,
+                );
+                permissionToCompare.name == permission;
+              })
+                ? true
+                : false;
+            })
+            .flat();
+
+          // check if all permissions have passed
+          const allPermissionsPassed = (): boolean => {
+            console.log(
+              'permissions passed',
+              permissionsPassed,
+              permissionsPassed.filter((permission) => permission == true)
+                .length,
+              'required permissions:',
+              permissions,
+              permissions.length,
+            );
+            if (
+              permissionsPassed.filter((permission) => permission == true)
+                .length == permissions.length
+            ) {
+              console.log(
+                'all permissions passed:',
+                permissionsPassed.filter((permission) => permission == true)
+                  .length == permissions.length,
+              );
+              return true;
+            }
+
+            console.log(
+              'all permissions passed:',
+              permissionsPassed.filter((permission) => permission == true)
+                .length == permissions.length,
+            );
+            return false;
+          };
+
+          return allPermissionsPassed();
+        };
         return hasPermission();
       }),
     );
