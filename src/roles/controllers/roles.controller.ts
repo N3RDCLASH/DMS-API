@@ -19,6 +19,13 @@ import { RolesService } from '../service/roles.service';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { forkJoin, from, merge, Observable } from 'rxjs';
 import { response } from 'express';
+import {
+  CREATE_ROLES,
+  DELETE_ROLES,
+  READ_ROLES,
+  UPDATE_ROLES,
+} from 'src/permissions/constants/permissions.constants';
+import { hasPermission } from 'src/auth/decorators/permissions.decorator';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -32,26 +39,31 @@ export class RolesController {
 
   // TODO: rewrite using dto
   @Post()
+  @hasPermission(CREATE_ROLES)
   createRole(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.createRole(createRoleDto);
   }
 
   @Get()
+  @hasPermission(READ_ROLES)
   getAllRoles(): Object {
     return this.rolesService.findAllRoles();
   }
 
   @Get(':id')
+  @hasPermission(UPDATE_ROLES)
   getOneRole(@Param('id') id: number) {
     return this.rolesService.findOneRole(id);
   }
 
   @Put(':id')
+  @hasPermission(UPDATE_ROLES)
   updateOneRole(@Param('id') id: number, @Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.updateOneRole(id, createRoleDto);
   }
 
   @Delete(':id')
+  @hasPermission(DELETE_ROLES)
   deleteOneRole(@Param('id') id: number) {
     return this.rolesService.deleteOneRole(id);
   }
@@ -74,6 +86,7 @@ export class RolesController {
   }
 
   @Delete(':id/permissions')
+  // Todo:Add Permissions
   async removePermissionFromRole(
     @Param('id') role_id: number,
     @Body() createRolePermissionDto: CreateRolePermissionDto,
