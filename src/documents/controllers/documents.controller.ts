@@ -25,6 +25,13 @@ import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { join } from 'path';
 import { map } from 'rxjs/operators';
 import * as escape from 'escape-path-with-spaces';
+import { hasPermission } from 'src/auth/decorators/permissions.decorator';
+import {
+  CREATE_DOCUMENTS,
+  DELETE_DOCUMENTS,
+  READ_DOCUMENTS,
+  SHARE_DOCUMENTS,
+} from 'src/permissions/constants/permissions.constants';
 @ApiTags('documents')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -34,6 +41,7 @@ export class DocumentsController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', uploadOptions))
+  @hasPermission(CREATE_DOCUMENTS)
   uploadFile(
     @Body() uploadFileDto: UploadFileDto,
     @UploadedFile() file: Express.Multer.File,
@@ -51,6 +59,7 @@ export class DocumentsController {
   }
 
   @Get()
+  @hasPermission(READ_DOCUMENTS)
   getAllDocumentsByUser(@Req() req: Request) {
     const {
       user: { id },
@@ -59,6 +68,7 @@ export class DocumentsController {
   }
 
   @Get(':id')
+  @hasPermission(READ_DOCUMENTS)
   getOneDocument(@Param('id') id: number) {
     return this.documentService.findSingleDocument(id);
   }
@@ -74,11 +84,13 @@ export class DocumentsController {
   }
 
   @Delete(':id')
+  @hasPermission(DELETE_DOCUMENTS)
   deleteOneDocument(@Param('id') id: number) {
     return this.documentService.deleteOneDocument(id);
   }
 
   @Post(':id/share')
+  @hasPermission(SHARE_DOCUMENTS)
   shareDocument(
     @Param('id') document_id: number,
     @Body() shareDocumentDto: ShareDocumentDto,
