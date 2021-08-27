@@ -1,5 +1,6 @@
 -- admin@DMS.com-DMS@dmin
-INSERT INTO `users` (
+INSERT INTO
+    `users` (
         `id`,
         `firstname`,
         `lastname`,
@@ -7,15 +8,18 @@ INSERT INTO `users` (
         `email`,
         `password`
     )
-VALUES (
+VALUES
+    (
         1,
         'Joel',
         'Naarendorp',
         'admin',
         'admin@DMS.com',
-        '$2y$12$B4QKeWtd38J.jXZEEAh3.OJRpzZx9.bYQIpoz9dSlisSGbWolsaT6'
+        '$2a$10$JWob5DDArLro9rZUOHxHb.luXKvbmUadk1G1XyTd2xLCkTWIo2nkO'
     );
-INSERT INTO `users` (
+
+INSERT INTO
+    `users` (
         `id`,
         `firstname`,
         `lastname`,
@@ -23,11 +27,12 @@ INSERT INTO `users` (
         `email`,
         `password`
     )
-VALUES (
+VALUES
+    (
         2,
         'Joel',
         'Naarendorp',
         'user',
         'user@DMS.com',
-        '$2y$12$3fBt1Ud.gxSkYW0siThmA.yeT4ECLga2JNARaEvDuBuOEVUnedvWO'
+        '$2a$10$JWob5DDArLro9rZUOHxHb.luXKvbmUadk1G1XyTd2xLCkTWIo2nkO'
     );
