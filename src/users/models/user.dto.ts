@@ -32,3 +32,7 @@ export class UserRoleDto {
   @ApiProperty()
   role_id: number;
 }
+export class UserRolesDto {
+  @ApiProperty()
+  roles: number[];
+}

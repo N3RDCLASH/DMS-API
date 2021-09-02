@@ -10,7 +10,7 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { forkJoin, from, Observable, of } from 'rxjs';
-import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { Role } from 'src/roles/models/role.entity';
 
 const userRelations = { relations: ['roles', 'roles.permissions'] };
@@ -21,6 +21,8 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     private auth: AuthService,
   ) {}
 
@@ -141,22 +143,38 @@ export class UsersService {
   }
 
   // todo:rewrite reactively
-  async addRoleToUser(user_id: number, role: Role) {
-    let user = await this.userRepository.findOne(user_id, userRelations);
-    // push role to be added to roles array
-    user.roles.push(role);
-    return await this.userRepository.save(user).catch((err) => {
-      throw console.log(err);
-    });
+  addRoleToUser(user_id: number, role: Role) {
+    return from(this.userRepository.findOne(user_id, userRelations)).pipe(
+      map((user) => {
+        user.roles.push(role);
+        return this.userRepository.save(user);
+      }),
+      catchError((error) => of(error)),
+    );
+  }
+  addRolesToUser(user_id: number, roles: number[]) {
+    return forkJoin({
+      user: this.userRepository.findOne(user_id, userRelations),
+      rolesToAdd: this.roleRepository.findByIds(roles),
+    }).pipe(
+      map(({ user, rolesToAdd }) => {
+        console.log(roles, rolesToAdd);
+        user.roles = [...rolesToAdd];
+        return this.userRepository.save(user);
+      }),
+      catchError((error) => of(error)),
+    );
   }
 
   // todo:rewrite reactively
-  async removeRoleFromUser(user_id: number, roleToRemove: Role) {
-    let user = await this.userRepository.findOne(user_id, userRelations);
+  removeRoleFromUser(user_id: number, roleToRemove: Role) {
     // filter role to remove out of roles array
-    user.roles = user.roles.filter((role) => role.id !== roleToRemove.id);
-    return await this.userRepository.save(user).catch((err) => {
-      throw Error(err);
-    });
+    return from(this.userRepository.findOne(user_id, userRelations)).pipe(
+      map((user) => {
+        console.log(user);
+        user.roles = user.roles.filter((role) => role.id !== roleToRemove.id);
+        return this.userRepository.save(user);
+      }),
+    );
   }
 }
