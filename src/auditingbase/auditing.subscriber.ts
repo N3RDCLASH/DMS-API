@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 @EventSubscriber()
-export class EverythingSubscriber implements EntitySubscriberInterface {
+export class AuditingSubscriber implements EntitySubscriberInterface {
   constructor(
     connection: Connection,
     @Inject(RequestInjectable) private requestInjectable: RequestInjectable,

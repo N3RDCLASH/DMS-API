@@ -6,10 +6,12 @@ import { DocumentsModule } from './documents/documents.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
-import { UsersController } from './users/controllers/users.controller';
 import { RolesController } from './roles/controllers/roles.controller';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { AuditingSubscriber } from './auditingbase/auditing.subscriber';
+import { RequestInjectable } from './injectables/request.injectable';
+import { AuditingModule } from './auditingbase/auditing.module';
 
 @Module({
   imports: [
@@ -19,9 +21,10 @@ import { PermissionsModule } from './permissions/permissions.module';
     ConfigModule.forRoot(),
     RolesModule,
     PermissionsModule,
+    AuditingModule,
   ],
   controllers: [AppController, RolesController],
-  providers: [AppService],
+  providers: [AppService, AuditingSubscriber],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
