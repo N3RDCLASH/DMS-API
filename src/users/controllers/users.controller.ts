@@ -20,16 +20,21 @@ import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { hasPermission } from 'src/auth/decorators/permissions.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto, UserRoleDto } from '../models/user.dto';
+import { CreateUserDto, UpdateUserDto, UserRoleDto, UserRolesDto } from '../models/user.dto';
 import { RolesService } from 'src/roles/service/roles.service';
 import { User } from '../models/user.interface';
-import { CREATE_USER, DELETE_USER,READ_USER, UPDATE_USER } from 'src/permissions/constants/permissions.constants';
+import {
+  CREATE_USER,
+  DELETE_USER,
+  READ_USER,
+  UPDATE_USER,
+} from 'src/permissions/constants/permissions.constants';
 import { PermissionGuard } from 'src/auth/gaurds/permissions.guard';
 import { Observable } from 'rxjs';
 
 // http error handling
 @UseFilters(new HttpExceptionFilter())
-@UseGuards(JwtAuthGuard, RolesGuard, PermissionGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
@@ -107,6 +112,7 @@ export class UsersController {
   }
 
   @Post(':id/roles')
+  @hasPermission(UPDATE_USER)
   async addRoleToUser(
     @Param('id') user_id: number,
     @Body() userRoleDto: UserRoleDto,
@@ -117,8 +123,20 @@ export class UsersController {
     const role = await this.roleService.findOneRole(role_id);
     return this.usersService.addRoleToUser(user_id, role);
   }
+  @Post(':id/roles/multi')
+  @hasPermission(UPDATE_USER)
+  async addRolesToUser(
+    @Param('id') user_id: number,
+    @Body() userRolesDto: UserRolesDto,
+  ) {
+    const { roles } = userRolesDto;
+    if (!roles) throw new BadRequestException();
+
+    return this.usersService.addRolesToUser(user_id, roles);
+  }
 
   @Delete(':id/roles')
+  @hasPermission(UPDATE_USER)
   async removeRoleFromUser(
     @Param('id') user_id: number,
     @Body() userRoleDto: UserRoleDto,
