@@ -37,7 +37,6 @@ export class RolesController {
     private readonly permissionService: PermissionsService,
   ) {}
 
-  // TODO: rewrite using dto
   @Post()
   @hasPermission(CREATE_ROLES)
   createRole(@Body() createRoleDto: CreateRoleDto) {
@@ -68,7 +67,6 @@ export class RolesController {
     return this.rolesService.deleteOneRole(id);
   }
 
-  // TODO: add/remove permission to role
   @Post(':id/permissions')
   async addPermissionToRole(
     @Param('id') role_id: number,
@@ -86,7 +84,7 @@ export class RolesController {
   }
 
   @Delete(':id/permissions')
-  // Todo:Add Permissions
+  // Todo: create Permissions for functionality
   async removePermissionFromRole(
     @Param('id') role_id: number,
     @Body() createRolePermissionDto: CreateRolePermissionDto,
