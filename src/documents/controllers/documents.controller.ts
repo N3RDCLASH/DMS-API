@@ -32,9 +32,10 @@ import {
   READ_DOCUMENTS,
   SHARE_DOCUMENTS,
 } from 'src/permissions/constants/permissions.constants';
+import { PermissionGuard } from 'src/auth/gaurds/permissions.guard';
 @ApiTags('documents')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentService: DocumentsService) {}

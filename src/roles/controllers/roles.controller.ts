@@ -12,13 +12,10 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { PermissionsService } from 'src/permissions/service/permissions.service';
-import { Role } from '../models/role.entity';
 import { CreateRoleDto } from '../models/role.dto';
 import { CreateRolePermissionDto } from '../models/role.dto';
 import { RolesService } from '../service/roles.service';
-import { RolesGuard } from 'src/auth/gaurds/roles.guard';
 import { forkJoin, from, merge, Observable } from 'rxjs';
-import { response } from 'express';
 import {
   CREATE_ROLES,
   DELETE_ROLES,
@@ -26,8 +23,9 @@ import {
   UPDATE_ROLES,
 } from 'src/permissions/constants/permissions.constants';
 import { hasPermission } from 'src/auth/decorators/permissions.decorator';
+import { PermissionGuard } from 'src/auth/gaurds/permissions.guard';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @ApiBearerAuth()
 @ApiTags('roles')
 @Controller('roles')
