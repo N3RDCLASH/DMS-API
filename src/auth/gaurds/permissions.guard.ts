@@ -46,10 +46,6 @@ export class PermissionGuard implements CanActivate {
           const permissionsPassed = permissions
             .map((permission) => {
               return userPermissions?.filter((permissionToCompare: any) => {
-                console.log(
-                  'permission found:',
-                  permissionToCompare.name == permission,
-                );
                 permissionToCompare.name == permission;
               })
                 ? true
@@ -59,32 +55,12 @@ export class PermissionGuard implements CanActivate {
 
           // check if all permissions have passed
           const allPermissionsPassed = (): boolean => {
-            console.log(
-              'permissions passed',
-              permissionsPassed,
-              permissionsPassed.filter((permission) => permission == true)
-                .length,
-              'required permissions:',
-              permissions,
-              permissions.length,
-            );
             if (
               permissionsPassed.filter((permission) => permission == true)
                 .length == permissions.length
             ) {
-              console.log(
-                'all permissions passed:',
-                permissionsPassed.filter((permission) => permission == true)
-                  .length == permissions.length,
-              );
               return true;
             }
-
-            console.log(
-              'all permissions passed:',
-              permissionsPassed.filter((permission) => permission == true)
-                .length == permissions.length,
-            );
             return false;
           };
 
