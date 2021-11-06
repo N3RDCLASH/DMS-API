@@ -12,6 +12,7 @@ export class PermissionBuilder {
     this._permission.name = name;
     return this;
   }
+  
   builder(): Permission {
     return this._permission;
   }

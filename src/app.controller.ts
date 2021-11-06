@@ -14,6 +14,7 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+  
   @Post('login')
   login(@Body() loginUserDto: LoginUserDto): Object {
     const { email, password } = loginUserDto;

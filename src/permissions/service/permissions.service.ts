@@ -15,6 +15,7 @@ export class PermissionsService {
   findAllPermissions(): Promise<PermissionEntity[]> {
     return this.permissionRepository.find();
   }
+  
   findOnePermission(id: number): Promise<PermissionEntity> {
     return this.permissionRepository.findOne(id);
   }

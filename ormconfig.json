@@ -4,9 +4,9 @@
     "port": 3306,
     "username": "root",
     "password": "",
-    "database": "test_dms",
+    "database": "test_dms_2",
     "entities": [
         "dist/**/*.entity{.ts,.js}"
     ],
-    "synchronize": true
+    "synchronize": false
 }

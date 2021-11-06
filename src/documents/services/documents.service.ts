@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { from, Observable } from 'rxjs';
+import { forkJoin, from, Observable } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Document } from '../models/document.interface';
 import { Document as DocumentEntity } from '../models/document.entity';
@@ -33,10 +33,13 @@ export class DocumentsService {
   }
 
   async shareDocumentWithUser(document_id: number, user_id: number) {
-    const document = await this.documentRepository.findOne(document_id);
-    const user = await this.userRepository.findOne(user_id);
-    document.shared_users = [user];
-    return this.documentRepository.save(document);
+    forkJoin({
+      document: this.documentRepository.findOne(document_id),
+      user: this.userRepository.findOne(user_id),
+    }).subscribe(({ document, user }) => {
+      document.shared_users = [user];
+      return this.documentRepository.save(document);
+    });
   }
   // todo: add documentshare fucntionality to service
 }

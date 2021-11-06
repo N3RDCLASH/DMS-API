@@ -1,3 +1,4 @@
+import { AuditingBase } from 'src/auditingbase/auditingbase';
 import { Role } from 'src/roles/models/role.entity';
 import {
   Entity,
@@ -10,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'users', synchronize: false })
-export class User {
+export class User extends AuditingBase {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,17 +29,7 @@ export class User {
 
   @Column()
   password: string;
-
-  @Column({ type: 'timestamp' })
-  created_at: Timestamp;
-
-  @Column({ type: 'timestamp' })
-  updated_at: Timestamp;
-
-  @Column({ type: 'timestamp' })
-  @DeleteDateColumn()
-  deleted_at: Timestamp;
-
+  
   @ManyToMany(() => Role)
   @JoinTable({
     name: 'user_has_roles',

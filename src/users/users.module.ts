@@ -6,10 +6,10 @@ import { UsersController } from './controllers/users.controller';
 import { UsersService } from './service/users.service';
 import { RolesService } from 'src/roles/service/roles.service';
 import { RolesModule } from 'src/roles/roles.module';
-
+import { Role } from 'src/roles/models/role.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
     forwardRef(() => AuthModule),
     forwardRef(() => RolesModule),
   ],

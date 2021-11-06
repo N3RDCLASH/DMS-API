@@ -7,10 +7,12 @@ export class RoleBuilder {
       name: '',
     };
   }
+  
   setName(name: string): RoleBuilder {
     this._role.name = name;
     return this;
   }
+
   build(): CreateRoleDto {
     return this._role;
   }

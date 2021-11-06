@@ -10,17 +10,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { PermissionsService } from 'src/permissions/service/permissions.service';
-import { Role } from '../models/role.entity';
 import { CreateRoleDto } from '../models/role.dto';
 import { CreateRolePermissionDto } from '../models/role.dto';
-import { RoleBuilder } from '../role.builder';
 import { RolesService } from '../service/roles.service';
-import { RolesGuard } from 'src/auth/gaurds/roles.guard';
-@UseGuards(JwtAuthGuard, RolesGuard)
+import { forkJoin, from, merge, Observable } from 'rxjs';
+import {
+  CREATE_ROLES,
+  DELETE_ROLES,
+  READ_ROLES,
+  UPDATE_ROLES,
+} from 'src/permissions/constants/permissions.constants';
+import { hasPermission } from 'src/auth/decorators/permissions.decorator';
+import { PermissionGuard } from 'src/auth/gaurds/permissions.guard';
+
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @ApiBearerAuth()
 @ApiTags('roles')
 @Controller('roles')
@@ -29,64 +34,68 @@ export class RolesController {
     private readonly rolesService: RolesService,
     private readonly permissionService: PermissionsService,
   ) {}
-  // TODO: rewrite using dto
-  @Post()
-  createRole(@Body() createRoleDto: CreateRoleDto) {
-    const { name } = createRoleDto;
 
-    if (!name) {
-      throw new BadRequestException();
-    }
-    const role = new RoleBuilder().setName(name).build();
-    return this.rolesService.createRole(role);
+  @Post()
+  @hasPermission(CREATE_ROLES)
+  createRole(@Body() createRoleDto: CreateRoleDto) {
+    return this.rolesService.createRole(createRoleDto);
   }
+
   @Get()
+  @hasPermission(READ_ROLES)
   getAllRoles(): Object {
     return this.rolesService.findAllRoles();
   }
+
   @Get(':id')
-  async getOneRole(@Param('id') id: number): Promise<Role> {
-    return await this.rolesService.findOneRole(id);
+  @hasPermission(UPDATE_ROLES)
+  getOneRole(@Param('id') id: number) {
+    return this.rolesService.findOneRole(id);
   }
+
   @Put(':id')
+  @hasPermission(UPDATE_ROLES)
   updateOneRole(@Param('id') id: number, @Body() createRoleDto: CreateRoleDto) {
-    const { name } = createRoleDto;
-    if (!name) {
-      throw new BadRequestException();
-    }
-    const role = new RoleBuilder().setName(name).build();
-    return this.rolesService.updateOneRole(id, role);
+    return this.rolesService.updateOneRole(id, createRoleDto);
   }
 
   @Delete(':id')
+  @hasPermission(DELETE_ROLES)
   deleteOneRole(@Param('id') id: number) {
     return this.rolesService.deleteOneRole(id);
   }
 
-  // TODO: add/remove permission to role
   @Post(':id/permissions')
   async addPermissionToRole(
     @Param('id') role_id: number,
     @Body() createRolePermissionDto: CreateRolePermissionDto,
   ) {
     const { permission_id } = createRolePermissionDto;
-    const role = await this.getOneRole(role_id);
-    const permission = await this.permissionService.findOnePermission(
-      permission_id,
+
+    const data = {
+      role: from(this.getOneRole(role_id)),
+      permission: from(this.permissionService.findOnePermission(permission_id)),
+    };
+    forkJoin(data).subscribe(({ role, permission }) =>
+      console.log(this.rolesService.addPermissiontoRole(role, permission)),
     );
-    return this.rolesService.addPermissiontoRole(role, permission);
   }
 
   @Delete(':id/permissions')
+  // Todo: create Permissions for functionality
   async removePermissionFromRole(
     @Param('id') role_id: number,
     @Body() createRolePermissionDto: CreateRolePermissionDto,
   ) {
     const { permission_id } = createRolePermissionDto;
-    const role = await this.getOneRole(role_id);
-    const permission = await this.permissionService.findOnePermission(
-      permission_id,
+
+    const data = {
+      role: from(this.getOneRole(role_id)),
+      permission: from(this.permissionService.findOnePermission(permission_id)),
+    };
+
+    forkJoin(data).subscribe(({ role, permission }) =>
+      this.rolesService.removePermissionfromRole(role, permission),
     );
-    return this.rolesService.removePermissionfromRole(role, permission);
   }
 }

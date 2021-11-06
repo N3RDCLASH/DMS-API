@@ -1,4 +1,5 @@
 import { type } from 'os';
+import { AuditingBase } from 'src/auditingbase/auditingbase';
 import { User } from 'src/users/models/user.entity';
 import {
   Entity,
@@ -11,7 +12,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'documents', synchronize: false })
-export class Document {
+export class Document extends AuditingBase {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,6 +31,7 @@ export class Document {
   @Column({ type: 'timestamp' })
   @DeleteDateColumn()
   deleted_at: Timestamp;
+  
   @ManyToMany(() => User)
   @JoinTable({
     name: 'document_shared_with_user',

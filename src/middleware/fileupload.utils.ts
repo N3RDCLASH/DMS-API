@@ -30,7 +30,6 @@ function validateUploadRequest(req, file, cb) {
 
   if (!file || !id) {
     return cb(new BadRequestException());
-    // throw ;
   }
 
   if (!mimeTypeIsValid(file)) {
